@@ -6,6 +6,7 @@
     <!--Container-->
 	<div class="w-full mx-auto px-2 ">
 
+        {{-- Tombol untuk create user-order --}}
         <a href="{{ route('user-order.create') }}">
             <button
                 class="my-4 px-5 py-3 font-medium leading-5 text-white transition-colors duration-150 bg-green-600 border border-transparent rounded-lg active:bg-green-600 hover:bg-green-700 focus:outline-none focus:shadow-outline-green"
@@ -17,7 +18,7 @@
 		<!--Card-->
 		<div id='recipients' class="p-8 mt-6 lg:mt-0 rounded shadow bg-white">
 
-
+            {{-- Membuat table dari DataTables --}}
 			<table id="dataTable" class="stripe hover" style="width:100%; padding-top: 1em;  padding-bottom: 1em;">
 				<thead>
 					<tr>
@@ -25,8 +26,9 @@
 						<th data-priority="2">Name</th>
 						<th data-priority="3">Spot</th>
                         <th data-priority="4">Ticket Amount</th>
-						<th data-priority="5">Payment Status</th>
-						<th data-priority="6">Action</th>
+                        <th data-priority="5">Total Price</th>
+						<th data-priority="6">Payment Status</th>
+						<th data-priority="7">Action</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -47,6 +49,7 @@
                                 @endphp
                             </td>
                             <td class="text-center">{{ $order->ticket_amount }}</td>
+                            <td class="text-center">{{ 'Rp. '.number_format($order->total_price) }}</td>
                             <td class="text-center">{{ $order->payment_status }}</td>
                             <td>
                                 <div class="flex justify-center">
@@ -56,6 +59,7 @@
                                     >
                                         Detail
                                     </a>
+                                    {{-- Jika payment_status != PENDING maka code didalamnya tidak akan dijalankan --}}
                                     @if($order->payment_status == 'PENDING')
                                         <a
                                             class=" mr-4 px-4 py-2 font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-lg active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue"
@@ -75,6 +79,7 @@
                                             Edit
                                         </a>
                                     @endif
+                                    {{-- Form untuk menghapus data order --}}
                                     <form method="POST" action="{{ route('order.destroy', $order->id) }}">
                                         @csrf
                                         @method('DELETE')

@@ -6,6 +6,7 @@
     <!--Container-->
 	<div class="w-full mx-auto px-2 ">
 
+        {{-- Tombol untuk create user-order --}}
         <a href="{{ route('spot.create') }}">
             <button
                 class="my-4 px-5 py-3 font-medium leading-5 text-white transition-colors duration-150 bg-green-600 border border-transparent rounded-lg active:bg-green-600 hover:bg-green-700 focus:outline-none focus:shadow-outline-green"
@@ -17,7 +18,7 @@
 		<!--Card-->
 		<div id='recipients' class="p-8 mt-6 lg:mt-0 rounded shadow bg-white">
 
-
+            {{-- Membuat table dari DataTables --}}
 			<table id="dataTable" class="stripe hover" style="width:100%; padding-top: 1em;  padding-bottom: 1em;">
 				<thead>
 					<tr>
@@ -32,7 +33,7 @@
                     @foreach ($spots as $spot)
                         <tr>
                             <td class="text-center">{{ $spot->spot_name }}</td>
-                            <td class="text-center">{{ $spot->ticket_price }}</td>
+                            <td class="text-center">{{ 'Rp. '.number_format($spot->ticket_price) }}</td>
                             <td class="text-center">{{ $spot->village }}</td>
                             <td class="text-center">{{ $spot->district }}</td>
                             <td>
@@ -49,6 +50,7 @@
                                     >
                                         Edit
                                     </a>
+                                    {{-- Form untuk menghapus data order --}}
                                     <form method="POST" action="{{ route('spot.destroy', $spot->id) }}">
                                         @csrf
                                         @method('DELETE')
