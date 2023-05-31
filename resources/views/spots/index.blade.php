@@ -30,6 +30,7 @@
 					</tr>
 				</thead>
 				<tbody>
+                    {{-- Membuat iterasi dari variable $spots untuk kemudian ditampilkan --}}
                     @foreach ($spots as $spot)
                         <tr>
                             <td class="text-center">{{ $spot->spot_name }}</td>

@@ -6,12 +6,16 @@
     <!--Container-->
 	<div class="w-full mx-auto px-2 ">
 
+        {{-- Menggunakan tag form untuk melakukan input data dengan method default post --}}
         <form method="POST" enctype="multipart/form-data" action="{{ route('spot.store') }}"  class="px-8 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+            {{-- Menambahkan csrf agar request form dapat disimpan --}}
             @csrf
             <h1 class=" text-2xl font-semibold mb-4 mt-2">Create Spot Data</h1>
 
             <label class="block text-sm ">
                 <span class="text-gray-700 dark:text-gray-400 font-semibold text-lg">Nama Spot</span>
+                {{-- Membuat input dengan name spot_name --}}
+                {{-- Ketika terdapat data spot_name, maka akan dimasukkan datanya sebagai value --}}
                 <input
                     class="block w-full py-3 rounded-lg text-md border-gray-400 mt-2 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                     placeholder="Masukkan nama tempat..."
@@ -23,6 +27,8 @@
 
             <label class="block text-sm mt-4">
                 <span class="text-gray-700 dark:text-gray-400 font-semibold text-lg">Harga</span>
+                {{-- Membuat input dengan name ticket_price --}}
+                {{-- Ketika terdapat data ticket_price, maka akan dimasukkan datanya sebagai value --}}
                 <input
                     class="block w-full py-3 rounded-lg text-md border-gray-400 mt-2 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                     placeholder="Masukkan harga tiket"

@@ -11,12 +11,14 @@
                 <h1 class=" text-2xl font-semibold mb-4 mt-2">Order Data</h1>
 
                 <div class="flex align-middle">
+                    {{-- Membuat tombol untuk ke halaman index --}}
                     <a
                         class=" mr-4 px-4 py-4 font-medium leading-5 text-black transition-colors duration-150 bg-slate-600 border border-transparent rounded-lg active:bg-slate-600 hover:bg-slate-700 focus:outline-none focus:shadow-outline-slate"
                         href="{{ route('order.index') }}"
                     >
                         Back to Dashboard
                     </a>
+                    {{-- Membuat tombol untuk melakukan payment, tombol ini dieksekusi menggunakan jquery --}}
                     <button
                         class="px-4 py-2 font-medium leading-5 text-white transition-colors duration-150 bg-green-400 border border-transparent rounded-lg active:bg-green-400 hover:bg-green-500 focus:outline-none focus:shadow-outline-green"
                         type="submit"

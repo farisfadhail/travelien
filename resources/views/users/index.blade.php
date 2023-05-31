@@ -18,6 +18,7 @@
 					</tr>
 				</thead>
 				<tbody>
+                    {{-- Membuat iterasi dari variable $users untuk kemudian ditampilkan --}}
                     @foreach ($users as $user)
                         <tr>
                             <td class="text-center">{{ $user->name }}</td>

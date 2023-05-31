@@ -32,6 +32,7 @@
 					</tr>
 				</thead>
 				<tbody>
+                    {{-- Membuat iterasi dari data orders --}}
                     @foreach ($orders as $order)
                         <tr>
                             <td class="text-center">{{ $order->date }}</td>

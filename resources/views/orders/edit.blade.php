@@ -6,13 +6,18 @@
     <!--Container-->
 	<div class="w-full mx-auto px-2 ">
 
+        {{-- Menggunakan tag form untuk melakukan input data dengan method default post --}}
         <form method="POST" enctype="multipart/form-data" action="{{ route('order.update', $order[0]->id) }}"  class="px-8 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+            {{-- Menambahkan csrf agar request form dapat disimpan --}}
             @csrf
+            {{-- Method diubah menjadi PUT untuk update data --}}
             @method('PUT')
             <h1 class=" text-2xl font-semibold mb-4 mt-2">Edit Data Order</h1>
 
             <label class="block text-sm ">
                 <span class="text-gray-700 dark:text-gray-400 font-semibold text-lg">Date</span>
+                {{-- Membuat input dengan name date --}}
+                {{-- Ketika terdapat data date, maka akan dimasukkan datanya sebagai value --}}
                 <input
                     class="block w-full py-3 rounded-lg text-md border-gray-400 mt-2 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                     name="date"
@@ -23,6 +28,8 @@
 
             <label class="block text-sm mt-4">
                 <span class="text-gray-700 dark:text-gray-400 font-semibold text-lg">Ticket Amount</span>
+                {{-- Membuat input dengan name ticket_amount --}}
+                {{-- Ketika terdapat data ticket_amount, maka akan dimasukkan datanya sebagai value --}}
                 <input
                     class="block w-full py-3 rounded-lg text-md border-gray-400 mt-2 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                     placeholder="Masukkan jumlah tiket..."

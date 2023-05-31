@@ -16,7 +16,7 @@ return new class extends Migration
 
             $table->date('date');
             $table->integer('ticket_amount');
-            $table->string('payment_status')->default('pending');
+            $table->string('payment_status');
             $table->string('snap_token')->nullable();
             $table->bigInteger('total_price');
             $table->foreignId('user_order_id')->constrained();

@@ -6,13 +6,18 @@
     <!--Container-->
 	<div class="w-full mx-auto px-2 ">
 
+        {{-- Menggunakan tag form untuk melakukan input data dengan method default post --}}
         <form method="POST" enctype="multipart/form-data" action="{{ route('user-order.update', $user_order[0]->id) }}"  class="px-8 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+            {{-- Menambahkan csrf agar request form dapat disimpan --}}
             @csrf
+            {{-- Method diubah menjadi PUT untuk update data --}}
             @method('PUT')
             <h1 class=" text-2xl font-semibold mb-4 mt-2">Edit Data User for order</h1>
 
             <label class="block text-sm ">
                 <span class="text-gray-700 dark:text-gray-400 font-semibold text-lg">Full Name</span>
+                {{-- Membuat input dengan name name --}}
+                {{-- Ketika terdapat data name, maka akan dimasukkan datanya sebagai value --}}
                 <input
                     class="block w-full py-3 rounded-lg text-md border-gray-400 mt-2 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                     placeholder="Masukkan nama lengkap..."
@@ -24,6 +29,8 @@
 
             <label class="block text-sm mt-4">
                 <span class="text-gray-700 dark:text-gray-400 font-semibold text-lg">Identity Number</span>
+                {{-- Membuat input dengan name indentity_number --}}
+                {{-- Ketika terdapat data indentity_number, maka akan dimasukkan datanya sebagai value --}}
                 <input
                     class="block w-full py-3 rounded-lg text-md border-gray-400 mt-2 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                     placeholder="Masukkan nomor identitas..."

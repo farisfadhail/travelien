@@ -18,7 +18,7 @@ class OrderSeeder extends Seeder
             'date' => Date::now(),
             'ticket_amount' => 3,
             'payment_status' => 'PAID',
-            'snap_token' => 'akjsdbakwjdbaksjdbawhdb',
+            'snap_token' => '730a75a7-8580-49c9-818b-f9f70310b27e',
             'total_price' => 15000,
             'user_order_id' => 1,
             'spot_id' => 1,
