@@ -21,7 +21,7 @@
                     {{-- Membuat tombol untuk ke halaman route user-order.edit dengan membawa id dari user_order --}}
                     <a
                         class="px-4 py-4 font-medium leading-5 text-white transition-colors duration-150 bg-yellow-400 border border-transparent rounded-lg active:bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:shadow-outline-yellow"
-                        href="{{ route('user-order.edit', $user_order[0]->id) }}"
+                        href="{{ route('order.edit', $order[0]->order_id) }}"
                     >
                         Edit
                     </a>
@@ -32,7 +32,7 @@
                 <span class="text-gray-700 dark:text-gray-400 font-semibold text-lg">Nama Pemesan</span>
                 <div class="block w-full py-3 rounded-lg text-md border-gray-400 mt-2 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
                     @php
-                        echo $user_order[0]->name
+                        echo $order[0]->name
                     @endphp
                 </div>
             </label>
@@ -41,7 +41,7 @@
                 <span class="text-gray-700 dark:text-gray-400 font-semibold text-lg">Nama Spot</span>
                 <div class="block w-full py-3 rounded-lg text-md border-gray-400 mt-2 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
                     @php
-                        echo $spot[0]->spot_name
+                        echo $order[0]->spot_name
                     @endphp
                 </div>
             </label>
@@ -68,7 +68,7 @@
                 <span class="text-gray-700 dark:text-gray-400 font-semibold text-lg">Status Pembayaran</span>
                 <div class="block w-full py-3 rounded-lg text-md border-gray-400 mt-2 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
                     @php
-                        echo $order[0]->payment_status
+                        echo strtoupper($order[0]->payment_status)
                     @endphp
                 </div>
             </label>
@@ -77,7 +77,7 @@
                 <span class="text-gray-700 dark:text-gray-400 font-semibold text-lg">Nomor Telepon</span>
                 <div class="block w-full py-3 rounded-lg text-md border-gray-400 mt-2 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
                     @php
-                        echo $user_order[0]->phone
+                        echo $order[0]->phone
                     @endphp
                 </div>
             </label>

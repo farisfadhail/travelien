@@ -7,7 +7,7 @@
 	<div class="w-full mx-auto px-2 ">
 
         {{-- Tombol untuk create user-order --}}
-        <a href="{{ route('user-order.create') }}">
+        <a href="{{ route('order.create') }}">
             <button
                 class="my-4 px-5 py-3 font-medium leading-5 text-white transition-colors duration-150 bg-green-600 border border-transparent rounded-lg active:bg-green-600 hover:bg-green-700 focus:outline-none focus:shadow-outline-green"
             >
@@ -36,60 +36,45 @@
                     @foreach ($orders as $order)
                         <tr>
                             <td class="text-center">{{ $order->date }}</td>
-                            <td class="text-center">
-                                @php
-                                    //$order->user_order_id
-                                    $userOrderName = DB::select('SELECT * from user_orders where id = ?', [$order->user_order_id]);
-                                    echo $userOrderName[0]->name;
-                                @endphp
-                            </td>
-                            <td class="text-center">
-                                @php
-                                    $spotName = DB::select('SELECT * from spots where id = ?', [$order->spot_id]);
-                                    echo $spotName[0]->spot_name;
-                                @endphp
-                            </td>
+                            <td class="text-center">{{ $order->name }}</td>
+                            <td class="text-center">{{ $order->spot_name }}</td>
                             <td class="text-center">{{ $order->ticket_amount }}</td>
                             <td class="text-center">{{ 'Rp. '.number_format($order->total_price) }}</td>
-                            <td class="text-center">{{ $order->payment_status }}</td>
+                            <td class="text-center">{{ strtoupper($order->payment_status) }}</td>
                             <td>
                                 <div class="flex justify-center">
                                     <a
                                         class=" mr-4 px-4 py-2 font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none focus:shadow-outline-gray"
-                                        href="{{ route('order.show', $order->id) }}"
+                                        href="{{ route('order.show', $order->order_id) }}"
                                     >
                                         Detail
                                     </a>
                                     {{-- Jika payment_status != PENDING maka code didalamnya tidak akan dijalankan --}}
-                                    @if($order->payment_status == 'PENDING')
+                                    @if($order->payment_status == 'pending')
                                         <a
                                             class=" mr-4 px-4 py-2 font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-lg active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue"
-                                            href="{{ route('order.payment-page', $order->id) }}"
+                                            href="{{ route('order.payment-page', $order->order_id) }}"
                                             id="pay-button"
                                         >
                                             Pay
                                         </a>
-                                        <?php
-                                            $userOrder = DB::select('SELECT * FROM user_orders where id = ? limit 1', [$order->user_order_id]);
-                                        ?>
-
                                         <a
                                             class=" mr-4 px-4 py-2 font-medium leading-5 text-white transition-colors duration-150 bg-yellow-400 border border-transparent rounded-lg active:bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:shadow-outline-yellow"
-                                            href="{{ route('user-order.edit', $userOrder[0]->id) }}"
+                                            href="{{ route('order.edit', $order->order_id) }}"
                                         >
                                             Edit
                                         </a>
                                     @endif
                                     {{-- Form untuk menghapus data order --}}
-                                    <form method="POST" action="{{ route('order.destroy', $order->id) }}">
+                                    <button
+                                        class=" mr-4 px-4 py-2 font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
+                                        onclick="confirmation()"
+                                    >
+                                        Delete
+                                    </button>
+                                    <form method="POST" action="{{ route('order.destroy', $order->order_id) }}" id="delete-form">
                                         @csrf
                                         @method('DELETE')
-                                        <button
-                                            class=" mr-4 px-4 py-2 font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
-                                            type="submit"
-                                        >
-                                            Delete
-                                        </button>
                                     </form>
                                 </div>
                             </td>
@@ -106,4 +91,16 @@
 
 	</div>
 	<!--/container-->
+    <script>
+        function confirmation(){
+            var result = confirm("Are you sure to delete?");
+            if(result){
+                response_to_form()
+            }
+        }
+
+        function response_to_form() {
+            $('#delete-form').submit();
+        }
+    </script>
 </x-app-layout>

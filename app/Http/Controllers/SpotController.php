@@ -16,7 +16,7 @@ class SpotController extends Controller
     public function index()
     {
         // Mengambil seluruh data dari table spots
-        $spots = DB::select('SELECT * FROM spots');
+        $spots = Spot::all();
 
         // Redirect ke halaman index (index.blade.php)
         return view('spots.index', [
@@ -36,17 +36,21 @@ class SpotController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreSpotRequest $request)
+    public function store(StoreSpotRequest $request, Spot $spot)
     {
+        // Melakukan validasi pada inputan
+        $request->validated();
+
         // Menginisialisasi setiap input
-        $spot_name = $request->input('spot_name');
-        $ticket_price = $request->input('ticket_price');
-        $village = $request->input('village');
-        $district = $request->input('district');
+        $data = [
+            'spot_name' => $request->input('spot_name'),
+            'ticket_price' => $request->input('ticket_price'),
+            'village' => $request->input('village'),
+            'district' => $request->input('district'),
+        ];
 
         // Menambahkan query untuk insert data
-        $sql = "INSERT INTO spots (spot_name, ticket_price, village, district) VALUES (?, ?, ?, ?)";
-        DB::insert($sql, [$spot_name, $ticket_price, $village, $district]);
+        $spot->create($data);
 
         // Redirect ke halaman index
         return redirect()->route('spot.index');
@@ -55,11 +59,9 @@ class SpotController extends Controller
     /**
      * Display the specified resource.
      */
-    // Menampilkan detail data dengan mengambil parameter $id
-    public function show($id)
+    // Menampilkan detail data dengan mengambil data dari Spot
+    public function show(Spot $spot)
     {
-        $spot = DB::select('SELECT * FROM spots where id = ?', [$id]);
-
         return view('spots.show', [
             'spot' => $spot
         ]);
@@ -68,11 +70,9 @@ class SpotController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    // Menampilkan halaman edit dengan menerima parameter $id
-    public function edit($id)
+    // Menampilkan halaman edit
+    public function edit(Spot $spot)
     {
-        $spot = DB::select('SELECT * FROM spots where id = ?', [$id]);
-
         return view('spots.edit', [
             'spot' => $spot
         ]);
@@ -81,18 +81,22 @@ class SpotController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    // Melakukan update data berdasarkan parameter $id
-    public function update(UpdateSpotRequest $request, $id)
+    // Melakukan update data
+    public function update(UpdateSpotRequest $request, Spot $spot)
     {
-        // Menginisialisasi setiap inputnya
-        $spot_name = $request->input('spot_name');
-        $ticket_price = $request->input('ticket_price');
-        $village = $request->input('village');
-        $district = $request->input('district');
+        // Melakukan validasi pada inputan
+        $request->validated();
 
-        // Menambahkan query untuk update data
-        $sql = "UPDATE spots SET spot_name = ?, ticket_price = ?, village = ?, district = ? WHERE id = ?";
-        DB::update($sql, [$spot_name, $ticket_price, $village, $district, $id]);
+        // Menginisialisasi setiap inputnya
+        $data = [
+            'spot_name' => $request->input('spot_name'),
+            'ticket_price' => $request->input('ticket_price'),
+            'village' => $request->input('village'),
+            'district' => $request->input('district'),
+        ];
+
+        // Melakukan update
+        $spot->update($data);
 
         // Redirect ke halaman spot.index
         return redirect()->route('spot.index');
@@ -102,10 +106,12 @@ class SpotController extends Controller
      * Remove the specified resource from storage.
      */
     // Menghapus data berdasarkan parameter id
-    public function destroy($id)
+    public function destroy(Spot $spot)
     {
-        DB::delete('DELETE FROM spots where id = ?', [$id]);
+        // Menghapus data spot
+        $spot->delete();
 
+        // Redirect ke halaman spot.index
         return redirect()->route('spot.index');
     }
 }

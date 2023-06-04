@@ -40,8 +40,6 @@ Route::middleware('auth')->group(function () {
     Route::resource('/spot', SpotController::class);
     // Route ini mengarah ke halaman order dengan mengakses semua function resource yang berada pada OrderController
     Route::resource('/order', OrderController::class);
-    // Route ini mengarah ke halaman user-order dengan mengakses semua function resource yang berada pada UserOrderController
-    Route::resource('/user-order', UserOrderController::class);
 
     // Route ini digunakan untuk menampilkan data pada OrderController dengan function paymentPage
     Route::get('/order/detail-payment/{id}', [OrderController::class, 'paymentPage'])->name('order.payment-page');

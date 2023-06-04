@@ -21,7 +21,7 @@
                     {{-- Membuat tombol untuk ke halaman edit dengan membawa id dari spot --}}
                     <a
                         class="px-4 py-4 font-medium leading-5 text-white transition-colors duration-150 bg-yellow-400 border border-transparent rounded-lg active:bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:shadow-outline-yellow"
-                        href="{{ route('spot.edit', $spot[0]->id) }}"
+                        href="{{ route('spot.edit', $spot->id) }}"
                     >
                         Edit
                     </a>
@@ -32,7 +32,7 @@
                 <span class="text-gray-700 dark:text-gray-400 font-semibold text-lg">Nama Spot</span>
                 <div class="block w-full py-3 rounded-lg text-md border-gray-400 mt-2 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
                     @php
-                        echo $spot[0]->spot_name
+                        echo $spot->spot_name
                     @endphp
                 </div>
             </label>
@@ -41,7 +41,7 @@
                 <span class="text-gray-700 dark:text-gray-400 font-semibold text-lg">Harga per tiket</span>
                 <div class="block w-full py-3 rounded-lg text-md border-gray-400 mt-2 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
                     @php
-                        echo $spot[0]->ticket_price
+                        echo $spot->ticket_price
                     @endphp
                 </div>
             </label>
@@ -50,7 +50,7 @@
                 <span class="text-gray-700 dark:text-gray-400 font-semibold text-lg">Desa</span>
                 <div class="block w-full py-3 rounded-lg text-md border-gray-400 mt-2 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
                     @php
-                        echo $spot[0]->village
+                        echo $spot->village
                     @endphp
                 </div>
             </label>
@@ -59,7 +59,7 @@
                 <span class="text-gray-700 dark:text-gray-400 font-semibold text-lg">Kecamatan</span>
                 <div class="block w-full py-3 rounded-lg text-md border-gray-400 mt-2 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
                     @php
-                        echo $spot[0]->district
+                        echo $spot->district
                     @endphp
                 </div>
             </label>

@@ -7,7 +7,7 @@
 	<div class="w-full mx-auto px-2 ">
 
         {{-- Menggunakan tag form untuk melakukan input data dengan method default post --}}
-        <form method="POST" enctype="multipart/form-data" action="{{ route('spot.update', $spot[0]->id) }}"  class="px-8 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+        <form method="POST" enctype="multipart/form-data" action="{{ route('spot.update', $spot->id) }}"  class="px-8 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
             {{-- Menambahkan csrf agar request form dapat disimpan --}}
             @csrf
             {{-- Method diubah menjadi PUT untuk update data --}}
@@ -23,7 +23,7 @@
                     placeholder="Masukkan nama tempat..."
                     name="spot_name"
                     type="text"
-                    value="{{ old('spot_name', $spot[0]->spot_name) }}"
+                    value="{{ old('spot_name', $spot->spot_name) }}"
                 />
             </label>
 
@@ -36,7 +36,7 @@
                     placeholder="Masukkan harga tiket"
                     name="ticket_price"
                     type="number"
-                    value="{{ old('ticket_price', $spot[0]->ticket_price) }}"
+                    value="{{ old('ticket_price', $spot->ticket_price) }}"
                 />
             </label>
 
@@ -46,11 +46,11 @@
                 </span>
                 <select class="block w-full mt-1 text-md py-2 rounded-lg dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray" name="village" >
                     <option value="" class="text-gray-400">Pilih Desa...</option>
-                    <option value="Ungkalan" {{ 'Ungkalan' == $spot[0]->village ? 'selected' : '' }}>Ungkalan</option>
-                    <option value="Sabrang" {{ 'Sabrang' == $spot[0]->village ? 'selected' : '' }}>Sabrang</option>
-                    <option value="Sumberrejo" {{ 'Sumberrejo' == $spot[0]->village ? 'selected' : '' }}>Sumberrejo</option>
-                    <option value="Lojejer" {{ 'Lojejer' == $spot[0]->village ? 'selected' : '' }}>Lojejer</option>
-                    <option value="Puger" {{ 'Puger' == $spot[0]->village ? 'selected' : '' }}>Puger</option>
+                    <option value="Ungkalan" {{ 'Ungkalan' == $spot->village ? 'selected' : '' }}>Ungkalan</option>
+                    <option value="Sabrang" {{ 'Sabrang' == $spot->village ? 'selected' : '' }}>Sabrang</option>
+                    <option value="Sumberrejo" {{ 'Sumberrejo' == $spot->village ? 'selected' : '' }}>Sumberrejo</option>
+                    <option value="Lojejer" {{ 'Lojejer' == $spot->village ? 'selected' : '' }}>Lojejer</option>
+                    <option value="Puger" {{ 'Puger' == $spot->village ? 'selected' : '' }}>Puger</option>
                 </select>
             </label>
 
@@ -60,11 +60,11 @@
                 </span>
                 <select class="block w-full mt-1 text-md py-2 rounded-lg dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray" name="district">
                     <option value="" class="text-gray-400">Pilih Kecamatan...</option>
-                    <option value="Kaliwates" {{ "Kaliwates" == $spot[0]->district ? 'selected' : '' }}>Kaliwates</option>
-                    <option value="Sumbersari" {{ "Sumbersari" == $spot[0]->district ? 'selected' : '' }}>Sumbersari</option>
-                    <option value="Ambulu" {{ 'Ambulu' == $spot[0]->district ? 'selected' : '' }}>Ambulu</option>
-                    <option value="Wuluhan" {{ 'Wuluhan' == $spot[0]->district ? 'selected' : '' }}>Wuluhan</option>
-                    <option value="Patrang" {{ 'Patrang' == $spot[0]->district ? 'selected' : '' }}>Patrang</option>
+                    <option value="Kaliwates" {{ "Kaliwates" == $spot->district ? 'selected' : '' }}>Kaliwates</option>
+                    <option value="Sumbersari" {{ "Sumbersari" == $spot->district ? 'selected' : '' }}>Sumbersari</option>
+                    <option value="Ambulu" {{ 'Ambulu' == $spot->district ? 'selected' : '' }}>Ambulu</option>
+                    <option value="Wuluhan" {{ 'Wuluhan' == $spot->district ? 'selected' : '' }}>Wuluhan</option>
+                    <option value="Patrang" {{ 'Patrang' == $spot->district ? 'selected' : '' }}>Patrang</option>
                 </select>
             </label>
 

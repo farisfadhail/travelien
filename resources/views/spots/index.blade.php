@@ -52,15 +52,10 @@
                                         Edit
                                     </a>
                                     {{-- Form untuk menghapus data order --}}
-                                    <form method="POST" action="{{ route('spot.destroy', $spot->id) }}">
+                                    <form id="deleteForm" action="{{ route('spot.destroy', $spot->id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
-                                        <button
-                                            class=" mr-4 px-4 py-2 font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
-                                            type="submit"
-                                        >
-                                            Delete
-                                        </button>
+                                        <button type="submit"  onclick="return confirmDelete()" class="mr-4 px-4 py-2 font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-red">Delete</button>
                                     </form>
                                 </div>
                             </td>
@@ -77,4 +72,11 @@
 
 	</div>
 	<!--/container-->
+
+    <script>
+        function confirmDelete() {
+            var result = confirm("Are you sure you want to delete this data?");
+            return result;
+        }
+    </script>
 </x-app-layout>

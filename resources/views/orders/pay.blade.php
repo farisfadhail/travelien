@@ -33,7 +33,7 @@
                 <span class="text-gray-700 dark:text-gray-400 font-semibold text-lg">Nama Pemesan</span>
                 <div class="block w-full py-3 rounded-lg text-md border-gray-400 mt-2 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
                     @php
-                        echo $user_order[0]->name
+                        echo $order[0]->name
                     @endphp
                 </div>
             </label>
@@ -42,7 +42,7 @@
                 <span class="text-gray-700 dark:text-gray-400 font-semibold text-lg">Nama Spot</span>
                 <div class="block w-full py-3 rounded-lg text-md border-gray-400 mt-2 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
                     @php
-                        echo $spot[0]->spot_name
+                        echo $order[0]->spot_name
                     @endphp
                 </div>
             </label>
@@ -78,7 +78,7 @@
                 <span class="text-gray-700 dark:text-gray-400 font-semibold text-lg">Nomor Telepon</span>
                 <div class="block w-full py-3 rounded-lg text-md border-gray-400 mt-2 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
                     @php
-                        echo $user_order[0]->phone
+                        echo $order[0]->phone
                     @endphp
                 </div>
             </label>
@@ -88,11 +88,11 @@
         <form action="{{ route('order.payment') }}" id="submit-form" method="POST">
             @csrf
             <input type="hidden" name="json" id="json_callback">
-            <input type="hidden" name="order_id" value="{{ $order[0]->id }}">
+            <input type="hidden" name="order_id" value="{{ $order[0]->order_id }}">
         </form>
-
 	</div>
 	<!--/container-->
+
 
     <script type="text/javascript">
       // For example trigger on button clicked, or any time you need

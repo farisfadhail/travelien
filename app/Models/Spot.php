@@ -16,7 +16,7 @@ class Spot extends Model
         'district'
     ];
 
-    public function UserOrder()
+    public function Order()
     {
         return $this->hasMany(Order::class);
     }

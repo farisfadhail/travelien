@@ -13,6 +13,46 @@
             <h1 class=" text-2xl font-semibold mb-4 mt-2">Create Data Order</h1>
 
             <label class="block text-sm ">
+                <span class="text-gray-700 dark:text-gray-400 font-semibold text-lg">Full Name</span>
+                {{-- Membuat input dengan name name --}}
+                {{-- Ketika terdapat data name, maka akan dimasukkan datanya sebagai value --}}
+                <input
+                    class="block w-full py-3 rounded-lg text-md border-gray-400 mt-2 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                    placeholder="Masukkan nama lengkap..."
+                    name="name"
+                    type="text"
+                    value="{{ old('name')}}"
+                />
+            </label>
+
+            <label class="block text-sm mt-4">
+                <span class="text-gray-700 dark:text-gray-400 font-semibold text-lg">Identity Number</span>
+                {{-- Membuat input dengan name identity_number --}}
+                {{-- Ketika terdapat data identity_number, maka akan dimasukkan datanya sebagai value --}}
+                <input
+                    class="block w-full py-3 rounded-lg text-md border-gray-400 mt-2 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                    placeholder="Masukkan nomor identitas..."
+                    name="identity_number"
+                    type="number"
+                    value="{{ old('identity_number')}}"
+                />
+            </label>
+
+            <label class="block text-sm mt-4">
+                <span class="text-gray-700 dark:text-gray-400 font-semibold text-lg">Phone</span>
+                <input
+                    class="block w-full py-3 rounded-lg text-md border-gray-400 mt-2 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                    placeholder="Masukkan nomor telepon..."
+                    name="phone"
+                    type="number"
+                    value="{{ old('phone')}}"
+                />
+                <span class="text-xs text-gray-600 dark:text-gray-400">
+                  Angka 0 pada awal diganti dengan 62. ex: 62872357125
+                </span>
+            </label>
+
+            <label class="block text-sm ">
                 <span class="text-gray-700 dark:text-gray-400 font-semibold text-lg">Date</span>
                 {{-- Membuat input dengan name date --}}
                 {{-- Ketika terdapat data date, maka akan dimasukkan datanya sebagai value --}}

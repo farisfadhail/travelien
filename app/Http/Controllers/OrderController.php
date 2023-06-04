@@ -2,12 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Spot;
+use App\Models\User;
+use App\Models\Order;
+use App\Models\UserOrder;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 use App\Http\Requests\PaymentRequest;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
+use Midtrans\Notification;
 
 class OrderController extends Controller
 {
@@ -17,8 +23,11 @@ class OrderController extends Controller
     // Digunakan untuk menampilkan halaman index
     public function index()
     {
-        // Mengambil seluruh data dari table orders
-        $orders = DB::select('SELECT * FROM orders');
+        // Mengambil seluruh data dari table orders dengan melakukan join pada table user_orders dan spots
+        $orders = Order::join('user_orders', 'orders.user_order_id', '=', 'user_orders.id')
+            ->join('spots', 'orders.spot_id', '=', 'spots.id')
+            ->select('orders.*', 'user_orders.*', 'spots.*', 'orders.id as order_id')
+            ->get();
 
         // Redirect ke halaman index (index.blade.php)
         return view('orders.index', [
@@ -32,10 +41,10 @@ class OrderController extends Controller
     // Digunakan untuk menampilkan halaman create
     public function create()
     {
-        // Mengambil seluruh data dari table orders
-        $spots = DB::select('SELECT * FROM spots');
+        // Mengambil seluruh data dari table spots
+        $spots = Spot::all();
 
-        // Redirect ke halaman index (index.blade.php)
+        // Redirect ke halaman create
         return view('orders.create', [
             'spots' => $spots
         ]);
@@ -45,24 +54,35 @@ class OrderController extends Controller
      * Store a newly created resource in storage.
      */
     // Digunakan untuk upload data dengan semua inputan disimpan pada variable $request
-    public function store(StoreOrderRequest $request)
+    public function store(Request $request, Order $order, UserOrder $userOrder)
     {
-        // Mengambil 1 data user_orders yang paling terakhir di tambahkan
-        $userOrder = DB::select('SELECT * FROM user_orders ORDER BY id DESC limit 1');
-        // Mengambil data spots berdasarkan request input yang bernama spot_id
-        $selectSpot = DB::select('SELECT * FROM spots where id = ?', [$request->input('spot_id')]);
+        // Mengambil data spot berdasarkan $request
+        $selectSpot = Spot::where('id', $request->spot_id)->get();
+
+        // Menginisialisasi setiap input dari variable $request
+        $dataUserOrder = [
+            'user_id' => Auth::id(),
+            'name' => $request->name,
+            'identity_number' => $request->identity_number,
+            'phone' => $request->phone,
+        ];
+
+        // Membuat data kemudian mengambil data yang paling terbaru
+        $userOrder->create($dataUserOrder);
+        $userOrder = UserOrder::latest()->first();
 
         // menginisialisasi setiap input dari variable $request
-        $date = $request->input('date');
-        $ticket_amount = $request->input('ticket_amount');
-        $total_price = $request->input('ticket_amount') * $selectSpot[0]->ticket_price;
-        $userOrderId = $userOrder[0]->id;
-        $spotId = $request->input('spot_id');
-        $payment_status = 'PENDING';
+        $dataOrder = [
+            'date' => $request->date,
+            'ticket_amount' => $request->ticket_amount,
+            'total_price' => $request->ticket_amount * $selectSpot[0]->ticket_price,
+            'user_order_id' => $userOrder->id,
+            'spot_id' => $request->spot_id,
+            'payment_status' => 'pending',
+        ];
 
-        // Membuat sql query untuk insert data
-        $sql = "INSERT INTO orders (date, ticket_amount, payment_status, total_price, user_order_id, spot_id) VALUES (?, ?, ?, ?, ?, ?)";
-        DB::insert($sql, [$date, $ticket_amount, $payment_status, $total_price, $userOrderId, $spotId]);
+        // Membuat data order
+        $order->create($dataOrder);
 
         // Redirect halaman ketika data telah ditambahkan
         return redirect()->route('order.index');
@@ -72,23 +92,18 @@ class OrderController extends Controller
      * Display the specified resource.
      */
     // Menampilkan data detail secara spesifik
-    public function show($id)
+    public function show(Order $order)
     {
-        // Mengambil 1 data dari table orders berdasarkan id yang dibawa oleh parameter
-        $selectOrder = DB::select('SELECT * FROM orders where id = ? limit 1', [$id]);
-        // Mengambil 1 data dari table user_orders yang mana id sama dengan atribut user_order_id
-        $userOrder = DB::select('SELECT * FROM user_orders where id = ? limit 1', [$selectOrder[0]->user_order_id]);
-        // Mengambil 1 data dari table spots yang mana id sama dengan atribut spot_id
-        $selectSpot = DB::select('SELECT * FROM spots where id = ? limit 1', [$selectOrder[0]->spot_id]);
-        // Mengambil 1 data dari table users yang mana id sama dengan atribut user_id
-        $selectUser = DB::select('SELECT * FROM users where id = ? limit 1', [$userOrder[0]->user_id]);
+        // Mengambil seluruh data dari table orders dengan melakukan join pada table user_orders dan spots
+        $selectOrder = Order::join('user_orders', 'orders.user_order_id', '=', 'user_orders.id')
+            ->join('spots', 'orders.spot_id', '=', 'spots.id')
+            ->where('orders.id', $order->id)
+            ->select('orders.*', 'user_orders.*', 'spots.spot_name', 'orders.id as order_id')
+            ->get();
 
         // Menampilkan halaman show pada folder orders dengan membawa seluruh variable yang sudah dibuat sebelumnya
         return view('orders.show', [
             'order' => $selectOrder,
-            'user_order' => $userOrder,
-            'spot' => $selectSpot,
-            'user' => $selectUser
         ]);
     }
 
@@ -96,23 +111,18 @@ class OrderController extends Controller
      * Show the form for editing the specified resource.
      */
     // Mengelola halaman edit
-    public function edit($id)
+    public function edit(Order $order)
     {
-        // Mengambil 1 data dari table orders berdasarkan id yang dibawa oleh parameter
-        $selectOrder = DB::select('SELECT * FROM orders where id = ? limit 1', [$id]);
-        // Mengambil 1 data dari table user_orders yang mana id sama dengan atribut user_order_id
-        $userOrder = DB::select('SELECT * FROM user_orders where id = ? limit 1', [$selectOrder[0]->user_order_id]);
-        // Mengambil 1 data dari table spots yang mana id sama dengan atribut spot_id
-        $selectSpot = DB::select('SELECT * FROM spots where id = ? limit 1', [$selectOrder[0]->spot_id]);
-        // Mengambil seluruh data dari table spots
-        $spots = DB::select('SELECT * FROM spots');
+        // Mengambil data data yang diperlukan
+        $spots = Spot::all();
+        $spot = Spot::findOrFail($order->spot_id)->get();
+        $userOrder = UserOrder::where('id', $order->user_order_id)->get();
 
-        // Menampilkan halaman edit pada folder orders dengan membawa seluruh variable yang sudah dibuat sebelumnya
         return view('orders.edit', [
-            'order' => $selectOrder,
-            'user_order' => $userOrder,
-            'spot' => $selectSpot,
-            'spots' => $spots
+            'order' => $order,
+            'spots' => $spots,
+            'spot' => $spot,
+            'user_order' => $userOrder
         ]);
     }
 
@@ -120,25 +130,36 @@ class OrderController extends Controller
      * Update the specified resource in storage.
      */
     // Mengelola update data
-    public function update(UpdateOrderRequest $request, $id)
+    public function update(Request $request, Order $order)
     {
-        // Mengambil 1 data dari table orders berdasarkan id yang dibawa oleh parameter
-        $selectOrder = DB::select('SELECT * FROM orders where id = ? limit 1', [$id]);
-        // Mengambil 1 data dari table user_orders yang mana id sama dengan atribut user_order_id
-        $userOrder = DB::select('SELECT * FROM user_orders where id = ? limit 1', [$selectOrder[0]->user_order_id]);
-        // Mengambil 1 data dari table spots yang mana id sama dengan input yang bernama spot_id
-        $selectSpot = DB::select('SELECT * FROM spots where id = ?', [$request->input('spot_id')]);
+        $selectSpot = Spot::where('id', $request->spot_id)->get();
+        // Membuat object dari model UserOrder()
+        $userOrder = new UserOrder();
+
+        // Menginisialisasi setiap input dari variable $request
+        $dataUserOrder = [
+            'user_id' => Auth::id(),
+            'name' => $request->name,
+            'identity_number' => $request->identity_number,
+            'phone' => $request->phone,
+        ];
+
+        // Melakukan update pada table user_orders kemudian diambil datanya
+        $userOrder->where('id', $order->user_order_id)->update($dataUserOrder);
+        $getUserOrderId = $userOrder->where('id', $order->user_order_id)->get();
 
         // menginisialisasi setiap input dari variable $request
-        $date = $request->input('date');
-        $ticket_amount = $request->input('ticket_amount');
-        $total_price = $request->input('ticket_amount') * $selectSpot[0]->ticket_price;
-        $userOrderId = $userOrder[0]->id;
-        $spotId = $request->input('spot_id');
+        $dataOrder = [
+            'date' => $request->date,
+            'ticket_amount' => $request->ticket_amount,
+            'total_price' => $request->ticket_amount * $selectSpot[0]->ticket_price,
+            'user_order_id' => $getUserOrderId[0]->id,
+            'spot_id' => $request->spot_id,
+            'payment_status' => 'pending',
+        ];
 
-        // Membuat sql query untuk update data yang mana id merupakan $id dari parameter 
-        $sql = "UPDATE orders SET date = ?, ticket_amount = ?, total_price = ?, spot_id = ? where id = ?";
-        DB::insert($sql, [$date, $ticket_amount, $total_price, $spotId, $id]);
+        // Melakukan update data order
+        $order->update($dataOrder);
 
         // Redirect halaman ke index ketika data telah diupdate
         return redirect()->route('order.index');
@@ -148,26 +169,35 @@ class OrderController extends Controller
      * Remove the specified resource from storage.
      */
     // Menghapus data berdasarkan id dari parameter
-    public function destroy($id)
+    public function destroy(Order $order, UserOrder $userOrder)
     {
-        // Memilih data terlebih dahulu dari table orders
-        $selectOrder = DB::select('SELECT * FROM orders where id = ? limit 1', [$id]);
-        // Menghapus data orders berdasarkan id dari parameter
-        DB::delete('DELETE FROM orders where id = ?', [$id]);
-        // Menghapus data user_orders berdasarkan user_order_id dari $selectOrder
-        DB::delete('DELETE FROM user_orders where id = ?', [$selectOrder[0]->user_order_id]);
+        // Mencari data dari table user_orders
+        $userOrder = UserOrder::findOrFail($order->user_order_id);
 
-        // Redirect halaman ke index ketika data telah dihapus
-        return redirect()->route('order.index');
+        // jika user_ordersnya ada maka table akan dihapus, Jika tidak ada maka tidak akan dihapus
+        if ($userOrder) {
+            $order->delete();
+            $userOrder->delete();
+
+            // Redirect halaman ke index ketika data telah dihapus
+            return redirect()->route('order.index')->with('success', 'Data berhasil dihapus');
+        } else {
+            return redirect()->route('order.index')->with('failed', 'Data tidak terhapus');
+        }
+
     }
 
     // Menampilkan halaman orders.pay dengan menerima parameter $id
     public function paymentPage($id)
     {
-        $selectOrder = DB::select('SELECT * FROM orders where id = ? limit 1', [$id]);
-        $userOrder = DB::select('SELECT * FROM user_orders where id = ? limit 1', [$selectOrder[0]->user_order_id]);
-        $selectSpot = DB::select('SELECT * FROM spots where id = ? limit 1', [$selectOrder[0]->spot_id]);
-        $selectUser = DB::select('SELECT * FROM users where id =? limit 1', [$userOrder[0]->user_id]);
+        // Mengambil seluruh data dari table orders dengan melakukan join pada table user_orders dan spots
+        $selectOrder = Order::join('user_orders', 'orders.user_order_id', '=', 'user_orders.id')
+            ->join('spots', 'orders.spot_id', '=', 'spots.id')
+            ->where('orders.id', $id)
+            ->select('orders.*', 'user_orders.*', 'spots.*', 'orders.id as order_id', 'user_orders.user_id as ud_user_id')
+            ->get();
+
+        $selectUser = User::where('id', $selectOrder[0]->ud_user_id)->get();
 
         // Membuat variable dari \Midtrans\Config untuk payment
         \Midtrans\Config::$serverKey = env('MIDTRANS_SERVER_KEY');
@@ -184,26 +214,24 @@ class OrderController extends Controller
             'item_details' => array(
                 [
                     'id' => rand(),
-                    'price' => $selectSpot[0]->ticket_price,
+                    'price' => $selectOrder[0]->ticket_price,
                     'quantity' => $selectOrder[0]->ticket_amount,
-                    'name' => 'Ticket for '.$selectSpot[0]->spot_name
+                    'name' => 'Ticket for '.$selectOrder[0]->spot_name
                 ]
             ),
             'customer_details' => array(
-                'first_name' => $userOrder[0]->name,
+                'first_name' => $selectOrder[0]->name,
                 'email' => $selectUser[0]->email,
-                'phone' => $userOrder[0]->phone,
+                'phone' => $selectOrder[0]->phone,
             ),
         );
 
-        // Membuat snap token dari \Midtrans\Snap dengan method getSnapToken() dan parameter $params 
+        // Membuat snap token dari \Midtrans\Snap dengan method getSnapToken() dan parameter $params
         $snapToken = \Midtrans\Snap::getSnapToken($params);
 
         // Menampilkan halaman pay
         return view('orders.pay', [
             'order' => $selectOrder,
-            'user_order' => $userOrder,
-            'spot' => $selectSpot,
             'user' => $selectUser,
             'snap_token' => $snapToken
         ]);
@@ -212,17 +240,62 @@ class OrderController extends Controller
     // Mengelola pembayaran
     public function payment(PaymentRequest $request)
     {
-        // Membuat input string yang bernama json menjadi json kembali 
+        // Membuat input string yang bernama json menjadi json kembali
+        $notification = new Notification();
+
         $json = json_decode($request->input('json'));
         $order_id = $request->input('order_id');
 
-        // Mengambil data dari input json
-        $transaction_status = strtoupper($json->transaction_status);
-        $transaction_id = $json->transaction_id;
+        $order = Order::where('id', $order_id);
 
-        // Melakukan update untuk status dan snap_token
-        $sql = "UPDATE orders SET payment_status = ?, snap_token = ? where id = ?";
-        DB::insert($sql, [$transaction_status, $transaction_id, $order_id]);
+        // Mengambil data dari input json
+        $transaction_status = $json->transaction_status;
+        $transaction_id = $json->transaction_id;
+        $fraud = $json->fraud_status;
+
+        // Membuat semua kondisi yang terjadi setelah transaksi dilakukan
+        if ($transaction_status == 'capture') {
+            if ($fraud == 'challenge') {
+                // TODO Set payment status in merchant's database to 'challenge'
+                $transactionStatus = 'pending';
+            }
+            else if ($fraud == 'accept') {
+                // TODO Set payment status in merchant's database to 'success'
+                $transactionStatus = 'paid';
+            }
+        }
+        else if ($transaction_status == 'cancel') {
+            if ($fraud == 'challenge') {
+                // TODO Set payment status in merchant's database to 'failure'
+                $transactionStatus = 'failed';
+            }
+            else if ($fraud == 'accept') {
+                // TODO Set payment status in merchant's database to 'failure'
+                $transactionStatus = 'failed';
+            }
+        }
+        else if ($transaction_status == 'deny') {
+            // TODO Set payment status in merchant's database to 'failure'
+            $transactionStatus = 'failed';
+        }
+        else if ($transaction_status == 'settlement') {
+            // TODO set payment status in merchant's database to 'Settlement'
+            $transactionStatus = 'paid';
+        }
+        else if ($transaction_status == 'pending') {
+            // TODO set payment status in merchant's database to 'Pending'
+            $transactionStatus = 'pending';
+        }
+        else if ($transaction_status == 'expire') {
+            // TODO set payment status in merchant's database to 'expire'
+            $transactionStatus = 'failed';
+        }
+
+        // Melakukan update untuk payment_status dan snap_token
+        $order->update([
+            'payment_status' => $transactionStatus,
+            'snap_token' => $transaction_id
+        ]);
 
         // Redirect halaman ke index ketika telah melakukan pembayaran
         return redirect()->route('order.index');

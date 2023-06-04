@@ -11,8 +11,8 @@ class UserController extends Controller
     public function index()
     {
         // Mengambil semua data users
-        $users = DB::select("SELECT * FROM users");
-        
+        $users = User::all();
+
         // Mengarahkan ke tampilan users.index dengan membawa variable $users
         return view('users.index', compact('users'));
     }
