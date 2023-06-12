@@ -29,6 +29,14 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        if (isset($request['remember']) && !empty($request['remember'])) {
+            setcookie('email', $request['email'], time()+3600);
+            setcookie('password', $request['password'], time()+3600);
+        } else {
+            setcookie('email', '');
+            setcookie('password', '');
+        }
+
         return redirect()->intended(RouteServiceProvider::HOME);
     }
 

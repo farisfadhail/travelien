@@ -41,6 +41,11 @@ Route::middleware('auth')->group(function () {
     // Route ini mengarah ke halaman order dengan mengakses semua function resource yang berada pada OrderController
     Route::resource('/order', OrderController::class);
 
+
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
     // Route ini digunakan untuk menampilkan data pada OrderController dengan function paymentPage
     Route::get('/order/detail-payment/{id}', [OrderController::class, 'paymentPage'])->name('order.payment-page');
     // Route ini digunakan untuk memproses data pada OrderController dengan function payment yang mana akan berfungsi pada saat melakukan pembayaran

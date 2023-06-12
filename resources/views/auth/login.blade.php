@@ -17,23 +17,38 @@
                     <!-- Input[ype="email"] -->
                     <div class="mt-4">
                         <x-input-label :value="__('Email')"/>
-                        <x-text-input type="email"
-                                 id="email"
-                                 name="email"
-                                 value="{{ old('email') }}"
-                                 class="block w-full"
-                                 required
-                                 autofocus/>
+                        <input
+                            type="email"
+                            class="block mt-1 border-gray-300 w-full rounded-md shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 focus-within:text-primary-600"
+                            id="email"
+                            name="email"
+                            class="block w-full"
+                            @if (isset($_COOKIE['email']))
+                                value="{{ $_COOKIE['email'] }}"
+                            @else
+                                value="{{ old('email') }}"
+                            @endif
+                            required
+                            autofocus
+                        >
                         <x-input-error :messages="$errors->get('email')" class="mt-2" />
                     </div>
 
                     <!-- Input[ype="password"] -->
                     <div class="mt-4">
                         <x-input-label for="password" :value="__('Password')"/>
-                        <x-text-input type="password"
-                                 id="password"
-                                 name="password"
-                                 class="block w-full"/>
+                        <input
+                            class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 focus-within:text-primary-600"
+                            type="password"
+                            id="password"
+                            name="password"
+                            class="block w-full"
+                            @if (isset($_COOKIE['password']))
+                                value="{{ $_COOKIE['password'] }}"
+                            @endif
+                            required
+                            autofocus
+                        >
                         <x-input-error :messages="$errors->get('password')" class="mt-2" />
                     </div>
 
