@@ -16,6 +16,8 @@ return new class extends Migration
 
             $table->string('spot_name');
             $table->bigInteger('ticket_price');
+            $table->longText('description');
+            $table->string('slug');
             $table->string('village');
             $table->string('district');
 

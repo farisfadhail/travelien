@@ -14,17 +14,19 @@
                     {{-- Membuat tombol untuk ke halaman index --}}
                     <a
                         class="mr-4 px-4 py-4 font-medium leading-5 text-black transition-colors duration-150 bg-slate-600 border border-transparent rounded-lg active:bg-slate-600 hover:bg-slate-700 focus:outline-none focus:shadow-outline-slate"
-                        href="{{ route('order.index') }}"
+                        href="{{ route('user.order.index') }}"
                     >
                         Back to Dashboard
                     </a>
                     {{-- Membuat tombol untuk ke halaman route user-order.edit dengan membawa id dari user_order --}}
-                    <a
-                        class="px-4 py-4 font-medium leading-5 text-white transition-colors duration-150 bg-yellow-400 border border-transparent rounded-lg active:bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:shadow-outline-yellow"
-                        href="{{ route('order.edit', $order[0]->order_id) }}"
-                    >
-                        Edit
-                    </a>
+                    @if ($order[0]->payment_status == 'pending')
+                        <a
+                            class="px-4 py-4 font-medium leading-5 text-white transition-colors duration-150 bg-yellow-400 border border-transparent rounded-lg active:bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:shadow-outline-yellow"
+                            href="{{ route('user.order.edit', $order[0]->order_id) }}"
+                        >
+                            Edit
+                        </a>
+                    @endif
                 </div>
             </div>
 

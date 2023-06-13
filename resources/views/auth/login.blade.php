@@ -14,7 +14,7 @@
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
 
-                    <!-- Input[ype="email"] -->
+                    <!-- Input type="email" -->
                     <div class="mt-4">
                         <x-input-label :value="__('Email')"/>
                         <input
@@ -23,6 +23,7 @@
                             id="email"
                             name="email"
                             class="block w-full"
+                            {{-- Jika terdapat cookies yang bernama email maka akan dimasukkan sebagai value --}}
                             @if (isset($_COOKIE['email']))
                                 value="{{ $_COOKIE['email'] }}"
                             @else
@@ -34,7 +35,7 @@
                         <x-input-error :messages="$errors->get('email')" class="mt-2" />
                     </div>
 
-                    <!-- Input[ype="password"] -->
+                    <!-- Input type="password" -->
                     <div class="mt-4">
                         <x-input-label for="password" :value="__('Password')"/>
                         <input
@@ -43,6 +44,7 @@
                             id="password"
                             name="password"
                             class="block w-full"
+                            {{-- Jika terdapat cookies yang bernama password maka akan dimasukkan sebagai value --}}
                             @if (isset($_COOKIE['password']))
                                 value="{{ $_COOKIE['password'] }}"
                             @endif

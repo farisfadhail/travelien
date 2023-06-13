@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Spot;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\UserOrder;
+use Midtrans\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -13,7 +15,6 @@ use Illuminate\Support\Facades\Date;
 use App\Http\Requests\PaymentRequest;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
-use Midtrans\Notification;
 
 class OrderController extends Controller
 {
@@ -26,6 +27,7 @@ class OrderController extends Controller
         // Mengambil seluruh data dari table orders dengan melakukan join pada table user_orders dan spots
         $orders = Order::join('user_orders', 'orders.user_order_id', '=', 'user_orders.id')
             ->join('spots', 'orders.spot_id', '=', 'spots.id')
+            ->where('user_orders.user_id', Auth::id())
             ->select('orders.*', 'user_orders.*', 'spots.*', 'orders.id as order_id')
             ->get();
 
@@ -39,14 +41,16 @@ class OrderController extends Controller
      * Show the form for creating a new resource.
      */
     // Digunakan untuk menampilkan halaman create
-    public function create()
+    public function create($id)
     {
         // Mengambil seluruh data dari table spots
-        $spots = Spot::all();
+        $spot = Spot::find($id);
+        $spot_image = $spot->getFirstMediaUrl('images');
 
         // Redirect ke halaman create
-        return view('orders.create', [
-            'spots' => $spots
+        return view('pages.orders.create', [
+            'spot' => $spot,
+            'spot_image' => $spot_image
         ]);
     }
 
@@ -85,7 +89,7 @@ class OrderController extends Controller
         $order->create($dataOrder);
 
         // Redirect halaman ketika data telah ditambahkan
-        return redirect()->route('order.index');
+        return redirect()->route('order.success');
     }
 
     /**
@@ -98,6 +102,7 @@ class OrderController extends Controller
         $selectOrder = Order::join('user_orders', 'orders.user_order_id', '=', 'user_orders.id')
             ->join('spots', 'orders.spot_id', '=', 'spots.id')
             ->where('orders.id', $order->id)
+            ->where('user_orders.user_id', Auth::id())
             ->select('orders.*', 'user_orders.*', 'spots.spot_name', 'orders.id as order_id')
             ->get();
 
@@ -114,14 +119,14 @@ class OrderController extends Controller
     public function edit(Order $order)
     {
         // Mengambil data data yang diperlukan
-        $spots = Spot::all();
-        $spot = Spot::findOrFail($order->spot_id)->get();
+        $spot = Spot::findOrFail($order->spot_id);
+        $spot_image = $spot->getFirstMediaUrl('images');
         $userOrder = UserOrder::where('id', $order->user_order_id)->get();
 
-        return view('orders.edit', [
+        return view('pages.orders.edit', [
             'order' => $order,
-            'spots' => $spots,
             'spot' => $spot,
+            'spot_image' => $spot_image,
             'user_order' => $userOrder
         ]);
     }
@@ -162,7 +167,7 @@ class OrderController extends Controller
         $order->update($dataOrder);
 
         // Redirect halaman ke index ketika data telah diupdate
-        return redirect()->route('order.index');
+        return redirect()->route('user.order.index');
     }
 
     /**
@@ -194,10 +199,12 @@ class OrderController extends Controller
         $selectOrder = Order::join('user_orders', 'orders.user_order_id', '=', 'user_orders.id')
             ->join('spots', 'orders.spot_id', '=', 'spots.id')
             ->where('orders.id', $id)
-            ->select('orders.*', 'user_orders.*', 'spots.*', 'orders.id as order_id', 'user_orders.user_id as ud_user_id')
+            ->select('orders.*', 'user_orders.*', 'spots.*', 'spots.id as spot_id', 'orders.id as order_id', 'user_orders.user_id as ud_user_id')
             ->get();
 
         $selectUser = User::where('id', $selectOrder[0]->ud_user_id)->get();
+        $spot = Spot::find($selectOrder[0]->spot_id);
+        $spot_image = $spot->getFirstMediaUrl('images');
 
         // Membuat variable dari \Midtrans\Config untuk payment
         \Midtrans\Config::$serverKey = env('MIDTRANS_SERVER_KEY');
@@ -229,10 +236,15 @@ class OrderController extends Controller
         // Membuat snap token dari \Midtrans\Snap dengan method getSnapToken() dan parameter $params
         $snapToken = \Midtrans\Snap::getSnapToken($params);
 
+        $date = Carbon::createFromFormat('Y-m-d', $selectOrder[0]->date); // Mengubah string tanggal menjadi objek Carbon
+        $formattedDate = $date->format('j F Y');
+
         // Menampilkan halaman pay
-        return view('orders.pay', [
+        return view('pages.orders.pay', [
             'order' => $selectOrder,
             'user' => $selectUser,
+            'spot_image' => $spot_image,
+            'formattedDate' => $formattedDate,
             'snap_token' => $snapToken
         ]);
     }
@@ -241,8 +253,6 @@ class OrderController extends Controller
     public function payment(PaymentRequest $request)
     {
         // Membuat input string yang bernama json menjadi json kembali
-        $notification = new Notification();
-
         $json = json_decode($request->input('json'));
         $order_id = $request->input('order_id');
 
@@ -298,6 +308,13 @@ class OrderController extends Controller
         ]);
 
         // Redirect halaman ke index ketika telah melakukan pembayaran
-        return redirect()->route('order.index');
+        return redirect()->route('payment.success');
+    }
+
+    public function orderSuccess()
+    {
+        $order = Order::latest()->first();
+
+        return view('pages.orders.order-success', compact('order'));
     }
 }

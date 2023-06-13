@@ -15,6 +15,7 @@ class AuthenticatedSessionController extends Controller
     /**
      * Display the login view.
      */
+    // Menampilkan halaman login yaitu pada folder auth dan file login.blade.php
     public function create(): View
     {
         return view('auth.login');
@@ -23,12 +24,17 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
+    // Menangani login dari inputan user
     public function store(LoginRequest $request): RedirectResponse
     {
+        // Melakukan autentikasi berdasarkan $request
         $request->authenticate();
 
         $request->session()->regenerate();
 
+        $request->session()->put('email', $request['email']);
+
+        // Membuat cookie untuk fitur remember me
         if (isset($request['remember']) && !empty($request['remember'])) {
             setcookie('email', $request['email'], time()+3600);
             setcookie('password', $request['password'], time()+3600);
@@ -43,6 +49,7 @@ class AuthenticatedSessionController extends Controller
     /**
      * Destroy an authenticated session.
      */
+    // Menghapus session autentikasi (logout)
     public function destroy(Request $request): RedirectResponse
     {
         Auth::guard('web')->logout();

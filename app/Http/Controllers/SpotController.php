@@ -6,6 +6,7 @@ use App\Models\Spot;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StoreSpotRequest;
 use App\Http\Requests\UpdateSpotRequest;
+use App\Models\Order;
 
 class SpotController extends Controller
 {
@@ -19,7 +20,7 @@ class SpotController extends Controller
         $spots = Spot::all();
 
         // Redirect ke halaman index (index.blade.php)
-        return view('spots.index', [
+        return view('pages.spots.index', [
             'spots' => $spots
         ]);
     }
@@ -30,7 +31,7 @@ class SpotController extends Controller
     // Menampilkan halaman create
     public function create()
     {
-        return view('spots.create');
+        //
     }
 
     /**
@@ -38,22 +39,7 @@ class SpotController extends Controller
      */
     public function store(StoreSpotRequest $request, Spot $spot)
     {
-        // Melakukan validasi pada inputan
-        $request->validated();
-
-        // Menginisialisasi setiap input
-        $data = [
-            'spot_name' => $request->input('spot_name'),
-            'ticket_price' => $request->input('ticket_price'),
-            'village' => $request->input('village'),
-            'district' => $request->input('district'),
-        ];
-
-        // Menambahkan query untuk insert data
-        $spot->create($data);
-
-        // Redirect ke halaman index
-        return redirect()->route('spot.index');
+        //
     }
 
     /**
@@ -62,8 +48,14 @@ class SpotController extends Controller
     // Menampilkan detail data dengan mengambil data dari Spot
     public function show(Spot $spot)
     {
-        return view('spots.show', [
-            'spot' => $spot
+        $spot = Spot::find($spot->id);
+        $spot_image = $spot->getFirstMediaUrl('images');
+        $orders = Order::where('spot_id', $spot->id)->count();
+
+        return view('pages.spots.detail', [
+            'spot' => $spot,
+            'spot_image' => $spot_image,
+            'orders' => $orders
         ]);
     }
 
@@ -73,9 +65,7 @@ class SpotController extends Controller
     // Menampilkan halaman edit
     public function edit(Spot $spot)
     {
-        return view('spots.edit', [
-            'spot' => $spot
-        ]);
+        //
     }
 
     /**
@@ -84,22 +74,7 @@ class SpotController extends Controller
     // Melakukan update data
     public function update(UpdateSpotRequest $request, Spot $spot)
     {
-        // Melakukan validasi pada inputan
-        $request->validated();
-
-        // Menginisialisasi setiap inputnya
-        $data = [
-            'spot_name' => $request->input('spot_name'),
-            'ticket_price' => $request->input('ticket_price'),
-            'village' => $request->input('village'),
-            'district' => $request->input('district'),
-        ];
-
-        // Melakukan update
-        $spot->update($data);
-
-        // Redirect ke halaman spot.index
-        return redirect()->route('spot.index');
+        //
     }
 
     /**
@@ -108,10 +83,6 @@ class SpotController extends Controller
     // Menghapus data berdasarkan parameter id
     public function destroy(Spot $spot)
     {
-        // Menghapus data spot
-        $spot->delete();
-
-        // Redirect ke halaman spot.index
-        return redirect()->route('spot.index');
+        //
     }
 }

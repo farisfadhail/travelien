@@ -7,7 +7,7 @@
 	<div class="w-full mx-auto px-2 ">
 
         {{-- Menggunakan tag form untuk melakukan input data dengan method default post --}}
-        <form method="POST" enctype="multipart/form-data" action="{{ route('order.update', $order->id) }}"  class="px-8 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+        <form method="POST" enctype="multipart/form-data" action="{{ route('user.order.update', $order->id) }}"  class="px-8 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
             {{-- Menambahkan csrf agar request form dapat disimpan --}}
             @csrf
             {{-- Method diubah menjadi PUT untuk update data --}}

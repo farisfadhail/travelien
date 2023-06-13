@@ -14,7 +14,7 @@
                     {{-- Membuat tombol untuk ke halaman index --}}
                     <a
                         class=" mr-4 px-4 py-4 font-medium leading-5 text-black transition-colors duration-150 bg-slate-600 border border-transparent rounded-lg active:bg-slate-600 hover:bg-slate-700 focus:outline-none focus:shadow-outline-slate"
-                        href="{{ route('order.index') }}"
+                        href="{{ route('user.order.index') }}"
                     >
                         Back to Dashboard
                     </a>
@@ -85,7 +85,7 @@
 
         </div>
 
-        <form action="{{ route('order.payment') }}" id="submit-form" method="POST">
+        <form action="{{ route('user.order.payment') }}" id="submit-form" method="POST">
             @csrf
             <input type="hidden" name="json" id="json_callback">
             <input type="hidden" name="order_id" value="{{ $order[0]->order_id }}">

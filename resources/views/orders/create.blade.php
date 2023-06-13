@@ -96,8 +96,14 @@
             </label>
 
             <div class="flex justify-end mt-4 mb-2">
+                <a
+                    class="px-5 py-3 font-medium leading-5 text-black transition-colors duration-150 border-2 border-pink-500 rounded-lg hover:bg-gray-100"
+                    href="{{ route('order.index') }}"
+                >
+                    Cancel
+                </a>
                 <button
-                    class="px-5 py-3 font-medium leading-5 text-white transition-colors duration-150 bg-green-600 border border-transparent rounded-lg active:bg-green-600 hover:bg-green-700 focus:outline-none focus:shadow-outline-green"
+                    class="ml-4 px-5 py-3 font-medium leading-5 text-white transition-colors duration-150 bg-green-500 border border-transparent rounded-lg active:bg-green-600 hover:bg-green-700 focus:outline-none focus:shadow-outline-green"
                     type="submit"
                     id="pay_button"
                 >
