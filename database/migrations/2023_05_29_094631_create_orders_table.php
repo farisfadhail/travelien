@@ -19,6 +19,10 @@ return new class extends Migration
             $table->string('payment_status');
             $table->string('snap_token')->nullable();
             $table->bigInteger('total_price');
+            $table->timestamp('transaction_time')->nullable();
+            $table->string('uid')->nullable(); // order_id
+            $table->string('payment_type')->nullable();
+            $table->string('bank')->nullable();
             $table->foreignId('user_order_id')->constrained();
             $table->foreignId('spot_id')->constrained();
 

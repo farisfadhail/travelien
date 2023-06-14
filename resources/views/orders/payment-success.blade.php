@@ -266,7 +266,7 @@
                     </clipPath>
                     </defs>
                 </svg>
-                <div class="text-center text-xl font-semibold text-gray-700">
+                <div class="text-center text-base font-semibold text-gray-700">
                     Anda telah berhasil menyelesaikan pembayaran. <br>
                     Selamat menikmati perjalanan ke tempat wisata
                 </div>

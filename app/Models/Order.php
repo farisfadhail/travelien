@@ -15,6 +15,10 @@ class Order extends Model
         'payment_status',
         'snap_token',
         'total_price',
+        'transaction_time',
+        'uid',
+        'payment_type',
+        'bank',
         'user_order_id',
         'spot_id'
     ];

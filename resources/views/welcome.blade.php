@@ -19,6 +19,7 @@
 
         <!-- Webpage Title -->
         <title>Travelien</title>
+        <link rel="icon" href="../../../images/logo.svg">
 
         <!-- Styles -->
         <link rel="preconnect" href="https://fonts.gstatic.com" />
@@ -77,6 +78,9 @@
                         </li>
                         <li>
                             <a class="nav-link page-scroll" href="#details">Details</a>
+                        </li>
+                        <li>
+                            <a class="nav-link page-scroll" href="{{ route('spot.index') }}">Spots</a>
                         </li>
                         @auth
                             @role('user')
@@ -229,9 +233,9 @@
                     <li class="mb-2"><a href="#">Terms & Conditions</a></li>
                     <li class="mb-2"><a href="#">Privacy Policy</a></li>
                 </ul>
-                <p class="pb-2 p-small statement">Copyright © <a href="#" class="no-underline">Travelien</a></p>
+                <p class="pb-2 p-small statement">Copyright © <a href="https://github.com/farisfadhail/travelien" class="no-underline">Travelien</a></p>
 
-                <p class="pb-2 p-small statement">Created by :<a href="#" class="no-underline"> Sistem Informasi PWEB B2</a></p>
+                <p class="pb-2 p-small statement">Created by :<a href="https://github.com/farisfadhail/travelien" class="no-underline"> Sistem Informasi PWEB B2</a></p>
             </div>
         <!-- end of container -->
         </div> <!-- end of copyright -->

@@ -21,7 +21,7 @@
                 />
             </label>
 
-            <label class="block text-sm ">
+            <label class="block text-sm mt-4">
                 <span class="text-gray-700 dark:text-gray-400 font-semibold text-lg">Nama Spot</span>
                 {{-- Membuat input dengan name spot_name --}}
                 {{-- Ketika terdapat data spot_name, maka akan dimasukkan datanya sebagai value --}}

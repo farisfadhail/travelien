@@ -6,9 +6,11 @@ use Carbon\Carbon;
 use App\Models\Spot;
 use App\Models\User;
 use App\Models\Order;
+use App\Models\Invoice;
 use App\Models\UserOrder;
 use Midtrans\Notification;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
@@ -64,32 +66,37 @@ class OrderController extends Controller
         $selectSpot = Spot::where('id', $request->spot_id)->get();
 
         // Menginisialisasi setiap input dari variable $request
-        $dataUserOrder = [
-            'user_id' => Auth::id(),
-            'name' => $request->name,
-            'identity_number' => $request->identity_number,
-            'phone' => $request->phone,
-        ];
+        if (!empty($request->date) && !empty($request->ticket_amount)) {
+            $dataUserOrder = [
+                'user_id' => Auth::id(),
+                'name' => $request->name,
+                'identity_number' => $request->identity_number,
+                'phone' => $request->phone,
+            ];
 
-        // Membuat data kemudian mengambil data yang paling terbaru
-        $userOrder->create($dataUserOrder);
-        $userOrder = UserOrder::latest()->first();
+            // Membuat data kemudian mengambil data yang paling terbaru
+            $userOrder->create($dataUserOrder);
+            $userOrder = UserOrder::latest()->first();
 
-        // menginisialisasi setiap input dari variable $request
-        $dataOrder = [
-            'date' => $request->date,
-            'ticket_amount' => $request->ticket_amount,
-            'total_price' => $request->ticket_amount * $selectSpot[0]->ticket_price,
-            'user_order_id' => $userOrder->id,
-            'spot_id' => $request->spot_id,
-            'payment_status' => 'pending',
-        ];
+            // menginisialisasi setiap input dari variable $request
+            $dataOrder = [
+                'date' => $request->date,
+                'ticket_amount' => $request->ticket_amount,
+                'total_price' => $request->ticket_amount * $selectSpot[0]->ticket_price,
+                'user_order_id' => $userOrder->id,
+                'spot_id' => $request->spot_id,
+                'payment_status' => 'pending',
+            ];
 
-        // Membuat data order
-        $order->create($dataOrder);
+            // Membuat data order
+            $order->create($dataOrder);
 
-        // Redirect halaman ketika data telah ditambahkan
-        return redirect()->route('order.success');
+            // Redirect halaman ketika data telah ditambahkan
+            return redirect()->route('order.success');
+        } else {
+            return redirect()->route('user.order.create')->with('error', 'Seluruh data harus diisi');
+        }
+
     }
 
     /**
@@ -103,12 +110,18 @@ class OrderController extends Controller
             ->join('spots', 'orders.spot_id', '=', 'spots.id')
             ->where('orders.id', $order->id)
             ->where('user_orders.user_id', Auth::id())
-            ->select('orders.*', 'user_orders.*', 'spots.spot_name', 'orders.id as order_id')
+            ->select('orders.*', 'user_orders.*', 'spots.*', 'orders.id as order_id')
             ->get();
+
+        $payment_date = Carbon::parse($selectOrder[0]->transaction_time)->format('H:i T j F Y');
+
+        $code = $selectOrder[0]->slug.'-'.$selectOrder[0]->uid;
 
         // Menampilkan halaman show pada folder orders dengan membawa seluruh variable yang sudah dibuat sebelumnya
         return view('orders.show', [
             'order' => $selectOrder,
+            'payment_date' => $payment_date,
+            'code' => $code,
         ]);
     }
 
@@ -302,10 +315,27 @@ class OrderController extends Controller
         }
 
         // Melakukan update untuk payment_status dan snap_token
-        $order->update([
-            'payment_status' => $transactionStatus,
-            'snap_token' => $transaction_id
-        ]);
+
+        if ($json->payment_type)
+        {
+            $order->update([
+                'payment_status' => $transactionStatus,
+                'snap_token' => $transaction_id,
+                'transaction_time' => $json->transaction_time,
+                'uid' => $json->order_id,
+                'payment_type' => $json->payment_type,
+                'bank' => $json->va_numbers[0]->bank
+            ]);
+        } else
+        {
+            $order->update([
+                'payment_status' => $transactionStatus,
+                'snap_token' => $transaction_id,
+                'transaction_time' => $json->transaction_time,
+                'uid' => $json->order_id,
+                'payment_type' => $json->payment_type
+            ]);
+        }
 
         // Redirect halaman ke index ketika telah melakukan pembayaran
         return redirect()->route('payment.success');
@@ -316,5 +346,34 @@ class OrderController extends Controller
         $order = Order::latest()->first();
 
         return view('pages.orders.order-success', compact('order'));
+    }
+
+    public function invoicepdf($order_id)
+    {
+        // Mengambil seluruh data dari table orders dengan melakukan join pada table user_orders dan spots
+        $selectOrder = Order::join('user_orders', 'orders.user_order_id', '=', 'user_orders.id')
+            ->join('spots', 'orders.spot_id', '=', 'spots.id')
+            ->where('orders.id', $order_id)
+            ->where('user_orders.user_id', Auth::id())
+            ->select('orders.*', 'user_orders.*', 'spots.*', 'orders.id as order_id')
+            ->get();
+
+        $payment_date = Carbon::parse($selectOrder[0]->transaction_time)->format('H:i T j F Y');
+
+        $code = $selectOrder[0]->slug.'-'.$selectOrder[0]->uid;
+
+        $pdf = Pdf::loadView('orders.pdf', [
+            'order' => $selectOrder,
+            'payment_date' => $payment_date,
+            'code' => $code,
+        ]);
+
+        //return $pdf->stream('invoice-'.$selectOrder[0]->uid.'.pdf');
+        return $pdf->download('travelien-'.$selectOrder[0]->uid.'.pdf');
+
+        //return view('orders.pdf', [
+        //    'order' => $selectOrder,
+        //    'payment_date' => $payment_date
+        //]);
     }
 }

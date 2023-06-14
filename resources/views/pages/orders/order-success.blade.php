@@ -9,10 +9,10 @@
         @vite('resources/css/app.css')
     </head>
     <body>
-        <div class="flex justify-center">
-            <div>
+        <div class="flex justify-center h-screen">
+            <div class="my-auto">
                 <img src="../../images/successful-order.svg" alt="">
-                <div class="text-center text-xl font-semibold text-gray-700">
+                <div class="text-center text-base font-semibold text-gray-700">
                     Selamat Anda telah menjadi bagian dari Travely! <br>
                     Silahkan melanjutkan ke tahap selanjutnya.
                 </div>
