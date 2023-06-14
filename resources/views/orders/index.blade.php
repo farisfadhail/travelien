@@ -64,17 +64,12 @@
                                         >
                                             Edit
                                         </a>
-                                        <button
-                                            class=" mr-4 px-4 py-2 font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
-                                            onclick="confirmation()"
-                                        >
-                                            Delete
-                                        </button>
+                                        <form action="{{ route('user.order.destroy', $order->order_id) }}" method="POST" onsubmit="return confirm('Anda yakin ingin menghapus data ini?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="mr-4 px-4 py-2 font-medium leading-5 text-white transition-colors duration-150 bg-red-500 border border-transparent rounded-lg active:bg-red-500 hover:bg-red-600 focus:outline-none focus:shadow-outline-red">Delete</button>
+                                        </form>
                                     @endif
-                                    <form method="POST" action="{{ route('user.order.destroy', $order->order_id) }}" id="delete-form">
-                                        @csrf
-                                        @method('DELETE')
-                                    </form>
                                 </div>
                             </td>
                         </tr>

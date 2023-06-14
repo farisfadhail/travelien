@@ -16,16 +16,25 @@
         <a class="py-2 px-3 inline-flex justify-center items-center gap-2 rounded-md border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm dark:bg-slate-900 dark:hover:bg-slate-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-white dark:focus:ring-offset-gray-800" href="{{ route('user.order.index') }}">
             Back to dashboard
         </a>
-        <a  class="py-2 px-3 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800"
-            href="{{ route('invoice-pdf', $order[0]->order_id) }}"
-        >
+        @if ($order[0]->payment_status == 'paid')
+            <a  class="py-2 px-3 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800"
+                href="{{ route('invoice-pdf', $order[0]->order_id) }}"
+            >
 
-            <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
-            <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
-            </svg>
-            Invoice PDF
-        </a>
+                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                </svg>
+                Invoice PDF
+            </a>
+        @endif
+        @if ($order[0]->payment_status == 'pending')
+            <a  class="py-2 px-3 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800"
+                href="{{ route('user.order.edit', $order[0]->order_id) }}"
+            >
+            Edit
+            </a>
+        @endif
         </div>
         <!-- Col -->
     </div>
@@ -63,6 +72,15 @@
                     {{ '+'.$order[0]->phone }}
                 </dd>
             </dl>
+
+            <dl class="grid sm:flex gap-x-3 text-sm">
+                <dt class="min-w-[150px] max-w-[200px] text-gray-500">
+                    Status:
+                </dt>
+                <dd class="font-medium text-gray-800 dark:text-gray-200">
+                    {{ strtoupper($order[0]->payment_status) }}
+                </dd>
+            </dl>
         </div>
         </div>
         <!-- Col -->
@@ -92,7 +110,11 @@
                 Pay date:
             </dt>
             <dd class="font-medium text-gray-800 dark:text-gray-200">
-                {{ $payment_date }}
+                @if ($order[0]->payment_status == 'pending')
+                    Belum melakukan pembayaran
+                @else
+                    {{ $payment_date }}
+                @endif
             </dd>
             </dl>
 
@@ -101,10 +123,14 @@
                 Billing method:
             </dt>
             <dd class="font-medium text-gray-800 dark:text-gray-200">
-                @if ($order[0]->payment_type == 'bank_transfer')
-                    {{ 'Bank Transfer - '.strtoupper($order[0]->bank) }}
+                @if ($order[0]->payment_status == 'pending')
+                    Belum melakukan pembayaran
                 @else
-                    {{ $order[0]->payment_type }}
+                    @if ($order[0]->payment_type == 'bank_transfer')
+                        {{ 'Bank Transfer - '.strtoupper($order[0]->bank) }}
+                    @else
+                        {{ strtoupper($order[0]->payment_type) }}
+                    @endif
                 @endif
             </dd>
             </dl>
@@ -152,13 +178,15 @@
         <!-- Grid -->
         <div class="grid grid-cols-2 sm:grid-cols-1 gap-3 sm:gap-2">
             <dl class="grid sm:grid-cols-5 gap-x-3 text-sm">
-            <dt class="col-span-3 text-gray-500">Total:</dt>
-            <dd class="col-span-2 font-medium text-gray-800 dark:text-gray-200">{{ 'Rp. '.number_format($order[0]->total_price) }}</dd>
+                <dt class="col-span-3 text-gray-500">Total:</dt>
+                <dd class="col-span-2 font-medium text-gray-800 dark:text-gray-200">{{ 'Rp. '.number_format($order[0]->total_price) }}</dd>
             </dl>
-            <dl class="grid sm:grid-cols-5 col-span-3 gap-x-3 text-sm mt-8">
-                <dt class="col-span-3 text-gray-500"></dt>
-                <dd class="col-span-2 font-medium text-gray-800 dark:text-gray-200">{!! DNS2D::getBarcodeHTML("$code", 'QRCODE') !!}</dd>
-            </dl>
+            @if ($order[0]->payment_status == 'paid')
+                <dl class="grid sm:grid-cols-5 col-span-3 gap-x-3 text-sm mt-8">
+                    <dt class="col-span-3 text-gray-500"></dt>
+                    <dd class="col-span-2 font-medium text-gray-800 dark:text-gray-200">{!! DNS2D::getBarcodeHTML("$code", 'QRCODE') !!}</dd>
+                </dl>
+            @endif
         </div>
         <!-- End Grid -->
         </div>

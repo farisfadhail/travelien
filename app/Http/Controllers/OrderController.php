@@ -187,20 +187,20 @@ class OrderController extends Controller
      * Remove the specified resource from storage.
      */
     // Menghapus data berdasarkan id dari parameter
-    public function destroy(Order $order, UserOrder $userOrder)
+    public function destroy(Order $order)
     {
         // Mencari data dari table user_orders
-        $userOrder = UserOrder::findOrFail($order->user_order_id);
+        $userOrder = UserOrder::where('id',$order->user_order_id);
 
         // jika user_ordersnya ada maka table akan dihapus, Jika tidak ada maka tidak akan dihapus
-        if ($userOrder) {
+        if (!empty($userOrder)) {
             $order->delete();
             $userOrder->delete();
 
             // Redirect halaman ke index ketika data telah dihapus
-            return redirect()->route('order.index')->with('success', 'Data berhasil dihapus');
+            return redirect()->route('user.order.index')->with('success', 'Data berhasil dihapus');
         } else {
-            return redirect()->route('order.index')->with('failed', 'Data tidak terhapus');
+            return redirect()->route('user.order.index')->with('failed', 'Data tidak terhapus');
         }
 
     }
@@ -368,8 +368,8 @@ class OrderController extends Controller
             'code' => $code,
         ]);
 
-        //return $pdf->stream('invoice-'.$selectOrder[0]->uid.'.pdf');
         return $pdf->download('travelien-'.$selectOrder[0]->uid.'.pdf');
+        //return $pdf->stream();
 
         //return view('orders.pdf', [
         //    'order' => $selectOrder,
