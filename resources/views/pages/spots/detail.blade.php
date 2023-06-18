@@ -33,10 +33,9 @@
                     Deskripsi
                 </div>
                 <div class="lead">{!! $spot->description !!}</div>
-                {{--<figure>
-                        <img src="https://flowbite.s3.amazonaws.com/typography-plugin/typography-image-1.png" alt="">
-                        <figcaption>Digital art by Anonymous</figcaption>
-                </figure>--}}
+                <figure class="mt-8 flex justify-center">
+                    {!! $spot->link_maps !!}
+                </figure>
                 </section>
             </article>
         </div>

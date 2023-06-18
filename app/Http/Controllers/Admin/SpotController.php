@@ -51,6 +51,7 @@ class SpotController extends Controller
             'slug' => Str::slug($request->input('spot_name')),
             'village' => $request->input('village'),
             'district' => $request->input('district'),
+            'link_maps' => $request->input('link_maps'),
         ];
 
 
@@ -105,6 +106,7 @@ class SpotController extends Controller
             'slug' => Str::slug($request->input('spot_name')),
             'village' => $request->input('village'),
             'district' => $request->input('district'),
+            'link_maps' => $request->input('link_maps'),
         ];
 
         // Melakukan update

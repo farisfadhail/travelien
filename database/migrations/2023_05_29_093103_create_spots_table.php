@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('slug');
             $table->string('village');
             $table->string('district');
+            $table->longText('link_maps');
 
             $table->timestamps();
         });

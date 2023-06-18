@@ -17,7 +17,8 @@ class Spot extends Model implements HasMedia
         'description',
         'slug',
         'village',
-        'district'
+        'district',
+        'link_maps'
     ];
 
     public function Order()
