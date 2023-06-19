@@ -33,7 +33,7 @@
                     Deskripsi
                 </div>
                 <div class="lead">{!! $spot->description !!}</div>
-                <div class="">
+                <div>
                     <hr class="h-px my-4 bg-gray-200 border-0 dark:bg-gray-700">
                     <figcaption class="font-semibold text-lg">Lokasi</figcaption>
                     <figure class="mt-8 flex justify-center">

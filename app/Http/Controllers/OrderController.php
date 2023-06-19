@@ -96,7 +96,6 @@ class OrderController extends Controller
         } else {
             return redirect()->route('user.order.create')->with('error', 'Seluruh data harus diisi');
         }
-
     }
 
     /**

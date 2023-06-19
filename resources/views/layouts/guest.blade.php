@@ -6,6 +6,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title>{{ config('app.name', 'Travelien') }}</title>
+        <link rel="icon" href="../../../images/logo.svg">
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <!-- Scripts -->

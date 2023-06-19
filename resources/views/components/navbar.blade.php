@@ -58,13 +58,44 @@
         <li>
             <a class="text-sm text-gray-400 hover:text-gray-500" href="#">About us</a>
         </li>
+        @auth
+            <li class="text-gray-300">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" class="w-4 h-4 current-fill" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                </svg>
+            </li>
+            <li>
+                @role('user')
+                    <a
+                        class="text-sm text-gray-400 hover:text-gray-500"
+                        href="{{ route('user.dashboard') }}"
+                    >
+                        Dashboard
+                    </a>
+                @endrole
+                @role('admin')
+                    <a
+                        class="text-sm text-gray-400 hover:text-gray-500"
+                        href="{{ route('admin.dashboard') }}"
+                    >
+                        Dashboard
+                    </a>
+                @endrole
+            </li>
+        @endauth
     </ul>
     @auth
         @role('user')
-            <a class="hidden lg:inline-block lg:ml-auto lg:mr-3 py-2 px-6 bg-gray-50 hover:bg-gray-100 text-sm text-gray-900 font-bold  rounded-xl transition duration-200" href="{{ route('user.dashboard') }}">Dashboard</a>
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="hidden lg:inline-block lg:ml-auto lg:mr-3 py-2 px-6 bg-gray-50 hover:bg-gray-100 text-sm text-gray-900 font-bold  rounded-xl transition duration-200">Logout</button>
+            </form>
         @endrole
         @role('admin')
-            <a class="hidden lg:inline-block lg:ml-auto lg:mr-3 py-2 px-6 bg-gray-50 hover:bg-gray-100 text-sm text-gray-900 font-bold  rounded-xl transition duration-200" href="{{ route('admin.dashboard') }}">Dashboard</a>
+            <form action="{{ route('logout') }}" method="POST" class="hidden lg:inline-block">
+                @csrf
+                <button type="submit" class="lg:ml-auto lg:mr-3 py-2 px-6 text-sm bg-gray-50 hover:bg-gray-100 text-gray-900 font-bold rounded-xl transition duration-200">Logout</button>
+            </form>
         @endrole
     @else
         <a class="hidden lg:inline-block lg:ml-auto lg:mr-3 py-2 px-6 bg-gray-50 hover:bg-gray-100 text-sm text-gray-900 font-bold  rounded-xl transition duration-200" href="{{ route('login') }}">Sign In</a>
