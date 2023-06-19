@@ -68,6 +68,13 @@
                 </div>
             </label>
 
+            <label class="block text-sm my-4">
+                <span class="text-gray-700 dark:text-gray-400 font-semibold text-lg">Google Maps</span>
+                <div class="block w-full py-3 rounded-lg text-md border-gray-400 mt-2 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
+                    {!! $spot->link_maps !!}
+                </div>
+            </label>
+
         </div>
 
 	</div>

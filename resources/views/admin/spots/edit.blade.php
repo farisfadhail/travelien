@@ -91,6 +91,7 @@
                     type="text"
                     value="{{ old('link_maps', $spot->link_maps) }}"
                 />
+                <span class="text-gray-600 dark:text-gray-400 mt-4 text-sm">Tekan Embed link atau sematkan link kemudian pilih ukuran sedang. Dan copy paste pada input diatas</span>
             </label>
 
             <div class="flex justify-end mt-4 mb-2">

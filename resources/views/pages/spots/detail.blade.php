@@ -33,9 +33,13 @@
                     Deskripsi
                 </div>
                 <div class="lead">{!! $spot->description !!}</div>
-                <figure class="mt-8 flex justify-center">
-                    {!! $spot->link_maps !!}
-                </figure>
+                <div class="">
+                    <hr class="h-px my-4 bg-gray-200 border-0 dark:bg-gray-700">
+                    <figcaption class="font-semibold text-lg">Lokasi</figcaption>
+                    <figure class="mt-8 flex justify-center">
+                        {!! $spot->link_maps !!}
+                    </figure>
+                </div>
                 </section>
             </article>
         </div>

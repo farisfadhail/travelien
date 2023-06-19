@@ -1,6 +1,6 @@
 <!-- component -->
 <nav class="relative px-4 py-4 flex justify-between items-center bg-white">
-    <a class="text-3xl font-bold leading-none" href="#">
+    <a class="text-3xl font-bold leading-none" href="{{ route('landing-page') }}">
         <svg class="h-16" viewBox="0 0 690 314" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M101.812 217C95.375 212 88.375 220.5 83.9375 217V145.312H57V127.375H128.688V145.312H101.812V217Z" fill="#FFB22E"/>
             <path d="M147.562 217C140.899 214.564 136.375 220 130.5 217V150.062H134.625L140.25 158C143 155.5 146.125 153.583 149.625 152.25C153.125 150.875 156.75 150.188 160.5 150.188H175.562V167.188H160.5C158.708 167.188 157.021 167.521 155.438 168.188C153.854 168.854 152.479 169.771 151.312 170.938C150.146 172.104 149.229 173.479 148.562 175.062C147.896 176.646 147.562 178.333 147.562 180.125V217Z" fill="#FFB22E"/>
@@ -30,7 +30,7 @@
     </div>
     <ul class="hidden absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 lg:flex lg:mx-auto lg:items-center lg:w-auto lg:space-x-6">
         <li>
-            <a 
+            <a
                 href="{{ route('landing-page') }}"
                 class="{{ request()->routeIs('landing-page') ? 'text-sm text-blue-600 font-bold' : 'text-sm text-gray-400 hover:text-gray-500' }}"
             >
@@ -43,8 +43,8 @@
             </svg>
         </li>
         <li>
-            <a 
-                class="{{ request()->routeIs('spot.index') ? 'text-sm text-blue-600 font-bold' : 'text-sm text-gray-400 hover:text-gray-500' }}" 
+            <a
+                class="{{ request()->routeIs('spot.index') ? 'text-sm text-blue-600 font-bold' : 'text-sm text-gray-400 hover:text-gray-500' }}"
                 href="{{ route('spot.index') }}"
             >
                 Spot
@@ -97,7 +97,7 @@
                     </a>
                 </li>
                 <li class="mb-1">
-                    <a 
+                    <a
                         class="{{ request()->routeIs('spot.index') ? 'block p-4 text-sm font-semibold text-blue-600 hover:bg-blue-50 rounded' : 'block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded' }}"
                         href="{{ route('spot.index') }}"
                     >
